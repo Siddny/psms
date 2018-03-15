@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Camera(models.Model):
+class CameraDetail(models.Model):
     name = models.CharField(max_length=20, blank=False, null=False)
     model = models.CharField(max_length=20, blank=False, null=True)
     date_added = models.DateField(blank=False, auto_now=True)

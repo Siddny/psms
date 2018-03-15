@@ -12,8 +12,8 @@ from datetime import date
 from .models import *
 from .serializers import ( CameraSerializer )
 
-class CameraView(generics.ListCreateAPIView):
-	queryset = Camera.objects.all()
+class CameraDetailView(generics.ListCreateAPIView):
+	queryset = CameraDetail.objects.all()
 	serializer_class = CameraSerializer
 
 	def list(self, request):

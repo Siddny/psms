@@ -3,5 +3,5 @@ from .models import *
 
 class CameraSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = Camera
+		model = CameraDetail
 		fields = '__all__'
