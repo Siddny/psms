@@ -25,7 +25,10 @@ SECRET_KEY = '(70fvv9jpq!xn10c+8e9z_10l-lxg8sx9nweb&il#(y*e3a8dn'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+    'psms.herokuapp.com',
+]
 
 
 # Application definition
@@ -120,3 +123,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join('static')
