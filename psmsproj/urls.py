@@ -18,6 +18,6 @@ from django.contrib import admin
 from psmsapp.views import *
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    # url(r'^admin/', admin.site.urls),
     url(r'^camera/', CameraDetailView.as_view()),
 ]
