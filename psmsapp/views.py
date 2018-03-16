@@ -10,13 +10,85 @@ from rest_framework.response import Response
 from datetime import date
 
 from .models import *
-from .serializers import ( CameraSerializer )
+from .serializers import ( CameraDetailSerializer, CameraTypesSerializer )
 
-class CameraDetailView(generics.ListCreateAPIView):
+
+### show camera details
+class CameraDetailView(generics.ListAPIView):
 	queryset = CameraDetail.objects.all()
-	serializer_class = CameraSerializer
+	serializer_class = CameraDetailSerializer
 
 	def list(self, request):
 		queryset = self.get_queryset()
-		serializer = CameraSerializer(queryset, many = True)
+		serializer = CameraDetailSerializer(queryset, many = True)
 		return Response(serializer.data)
+
+#### create camera details
+class AddCameraDetailView(generics.CreateAPIView):
+	queryset = CameraDetail.objects.all()
+	serializer_class = CameraDetailSerializer
+	def post(self, request, format=None):
+		camera_type = CameraTypes.objects.get(id=request.data['camera_type'])
+
+		cameradetail = CameraDetail.objects.create(
+	            	name = request.data['name'],
+	            	model = request.data['model'],
+                    status = request.data['status'],
+                    camera_type= camera_type)
+		return Response(status=status.HTTP_201_CREATED)
+
+### show types of cameras
+class CameraTypeView(generics.ListAPIView):
+	queryset = CameraTypes.objects.all()
+	serializer_class = CameraTypesSerializer
+
+	def list(self, request):
+		queryset = self.get_queryset()
+		serializer = CameraTypesSerializer(queryset, many=True)
+		return Response(serializer.data)
+
+### create new type of camera
+class NewCameraType(generics.CreateAPIView):
+	queryset = CameraTypes.objects.all()
+	serializer_class = CameraTypesSerializer
+	def post(self, request):
+		cameratype = CameraTypes.objects.create(name = request.data['name'])
+		return Response(status=status.HTTP_201_CREATED)
+
+# ya keegan
+class AddCameraType(generics.CreateAPIView):
+    serializer_class = CameraTypesSerializer
+    queryset = CameraTypes.objects.all()
+
+    def post(self, request, format=None):
+        cameradetail = request.data.pop('cameradetail')
+        try:
+            camera_type = CameraTypes.objects.create(
+            	name=request.data['name'])
+
+            for item in cameradetail:
+                CameraDetail.objects.create(
+                    camera_type=camera_type,
+                    status = item['status'],
+	            	name = item['name'],
+	            	model = item['model'])
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_201_CREATED)
+
+
+# {
+# "cameradetail":[{
+#     "name": "infinix",
+#     "model": "cannon",
+#     "status": null,
+#     "camera_type": null
+# },{
+#     "name": "Kodak",
+#     "model": "4567",
+#     "status": null,
+#     "camera_type": null
+# }],
+#     "name": "HD"
+# }
