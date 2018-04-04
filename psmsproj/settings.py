@@ -130,6 +130,7 @@ STATIC_ROOT = os.path.join('static')
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200',
     'http://127.0.0.1:4200',
+    'https://proteldemo.firebaseapp.com/',
 )
 
 CORS_ALLOW_METHODS = (
