@@ -31,7 +31,7 @@ class CameraDetail(models.Model):
     name = models.CharField(max_length=20, blank=False, null=False)
     model = models.CharField(max_length=20, null=True, blank=False,)
     date_added = models.DateField(null=True,blank=True, auto_now=True)
-    status = models.CharField(max_length=200,choices=CHOICES)
+    # status = models.CharField(max_length=200,choices=CHOICES)
     camera_type = models.ForeignKey(CameraTypes, null=True)
 
     class Meta:
