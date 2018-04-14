@@ -38,7 +38,7 @@ class AddCameraDetailView(generics.CreateAPIView):
     cameradetail = CameraDetail.objects.create(
                   name = request.data['name'],
                   model = request.data['model'],
-                      status = request.data['status'],
+                      # status = request.data['status'],
                       camera_type= camera_type)
     return Response(status=status.HTTP_201_CREATED)
 
