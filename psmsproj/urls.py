@@ -19,9 +19,14 @@ from psmsapp.views import *
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
-    url(r'^camera_detail/', CameraDetailView.as_view()),
-    url(r'^camera_types/', CameraTypeView.as_view()),
+    # ya keegan
     url(r'^camera_detail_add/', AddCameraType.as_view()),
+    # create new type of camera
     url(r'^new_type/', NewCameraType.as_view()),
+    # show types of cameras
+    url(r'^camera_types/', CameraTypeView.as_view()),
+    # create camera details
     url(r'^camera_detail_create/', AddCameraDetailView.as_view()),
+    # show camera details
+    url(r'^camera_detail/', CameraDetailView.as_view()),
 ]

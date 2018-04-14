@@ -5,6 +5,8 @@ class CameraDetailSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CameraDetail
 		fields = '__all__'
+		# e = CameraTypes.objects.select_related('name').get(id=1)
+
 
 
 class CameraTypesSerializer(serializers.ModelSerializer):
