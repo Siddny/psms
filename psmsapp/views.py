@@ -29,7 +29,7 @@ class CameraDetailView(generics.ListAPIView):
   #   self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE'
 
 #### create camera details
-class AddCameraDetailView(generics.CreateAPIView):
+class AddCameraDetailView(generics.ListCreateAPIView):
   queryset = CameraDetail.objects.all()
   serializer_class = CameraDetailSerializer
   def post(self, request, format=None):
@@ -38,8 +38,9 @@ class AddCameraDetailView(generics.CreateAPIView):
     cameradetail = CameraDetail.objects.create(
                   name = request.data['name'],
                   model = request.data['model'],
-                      # status = request.data['status'],
-                      camera_type= camera_type)
+                  p_serial_number = request.data['p_serial_number'],
+                  status = request.data['status'],
+                  camera_type= camera_type)
     return Response(status=status.HTTP_201_CREATED)
 
   # def options(self, *args, **kwargs):
