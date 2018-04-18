@@ -29,4 +29,7 @@ urlpatterns = [
     url(r'^camera_detail_create/', AddCameraDetailView.as_view()),
     # show camera details
     url(r'^camera_detail/', CameraDetailView.as_view()),
+    url(r'^createlist/', CreateListCameraDetailView.as_view()),
+    url(r'^up/(?P<pk>\d+)', UpCameraDetailView.as_view()),
+    url(r'^del/(?P<pk>\d+)', DelCameraDetailView.as_view()),
 ]

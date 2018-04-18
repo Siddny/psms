@@ -23,10 +23,56 @@ class CameraDetailView(generics.ListAPIView):
     serializer = CameraDetailSerializer(queryset, many = True)
     return Response(serializer.data)
 
-  # def options(self, *args, **kwargs):
-  #   self.response.headers['Access-Control-Allow-Origin'] = '*'
-  #   self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  #   self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE'
+
+class CreateListCameraDetailView(generics.ListCreateAPIView):
+  queryset = CameraDetail.objects.all()
+  serializer_class = CameraDetailSerializer
+
+  def post(self, request, format=None):
+    camera_type = CameraTypes.objects.get(id=request.data['camera_type'])
+
+    cameradetail = CameraDetail.objects.create(
+                  name = request.data['name'],
+                  model = request.data['model'],
+                  p_serial_number = request.data['p_serial_number'],
+                  status = request.data['status'],
+                  camera_type= camera_type)
+    return Response(status=status.HTTP_201_CREATED)
+
+  def list(self, request):
+    queryset = self.get_queryset()
+    serializer = CameraDetailSerializer(queryset, many = True)
+    return Response(serializer.data)
+
+class UpCameraDetailView(generics.RetrieveUpdateAPIView):
+  queryset = CameraDetail.objects.all()
+  serializer_class = CameraDetailSerializer
+
+  def put(self, request, pk, format=None):
+      try:
+          updated_camera = CameraDetail.objects.get(pk=pk)
+          serializer = CameraDetailSerializer(
+              updated_camera, data=request.data)
+          if serializer.is_valid():
+              serializer.save()
+          else:
+              return Response({"response": "data not valid"})
+          return Response(serializer.data)
+      except Exception as e:
+          raise e
+
+class DelCameraDetailView(generics.RetrieveDestroyAPIView):
+  queryset = CameraDetail.objects.all()
+  serializer_class = CameraDetailSerializer
+
+  def delete(self, request, pk, format=None):
+      try:
+          updated_camera = CameraDetail.objects.get(pk=pk)
+          updated_camera.delete()
+          return Response(status=status.HTTP_204_NO_CONTENT)
+      except Exception as e:
+          raise e
+
 
 #### create camera details
 class AddCameraDetailView(generics.ListCreateAPIView):
@@ -43,10 +89,7 @@ class AddCameraDetailView(generics.ListCreateAPIView):
                   camera_type= camera_type)
     return Response(status=status.HTTP_201_CREATED)
 
-  # def options(self, *args, **kwargs):
-  #   self.response.headers['Access-Control-Allow-Origin'] = '*'
-  #   self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  #   self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE'
+
 
 ### show types of cameras
 class CameraTypeView(generics.ListAPIView):
@@ -58,10 +101,7 @@ class CameraTypeView(generics.ListAPIView):
     serializer = CameraTypesSerializer(queryset, many=True)
     return Response(serializer.data)
 
-  # def options(self, *args, **kwargs):
-  #   self.response.headers['Access-Control-Allow-Origin'] = '*'
-  #   self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  #   self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE'
+
 
 ### create new type of camera
 class NewCameraType(generics.CreateAPIView):
@@ -72,10 +112,7 @@ class NewCameraType(generics.CreateAPIView):
     cameratype = CameraTypes.objects.create(name = request.data['name'])
     return Response(status=status.HTTP_201_CREATED)
 
-  # def options(self, *args, **kwargs):
-  #   self.response.headers['Access-Control-Allow-Origin'] = '*'
-  #   self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  #   self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE'
+
 
 # ya keegan
 class AddCameraType(generics.CreateAPIView):
@@ -99,10 +136,6 @@ class AddCameraType(generics.CreateAPIView):
 
         return Response(status=status.HTTP_201_CREATED)
 
-    # def options(self, *args, **kwargs):
-    #   self.response.headers['Access-Control-Allow-Origin'] = '*'
-    #   self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    #   self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE'
 
 # {
 # "cameradetail":[{
