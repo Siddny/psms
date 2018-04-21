@@ -136,6 +136,20 @@ class AddCameraType(generics.CreateAPIView):
 
         return Response(status=status.HTTP_201_CREATED)
 
+class chartView(generics.ListAPIView):
+  queryset = CameraDetail.objects.filter(status="Bad")
+  # queryset2 = CameraDetail.objects.filter(status="Fair")
+  # queryset3 = CameraDetail.objects.filter(status="Bad")
+  serializer_class = CameraDetailSerializer
+
+  def list(self, request):
+    queryset = self.get_queryset()
+    serializer = CameraTypesSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+
+
+
 
 # {
 # "cameradetail":[{

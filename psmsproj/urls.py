@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^createlist/', CreateListCameraDetailView.as_view()),
     url(r'^up/(?P<pk>\d+)', UpCameraDetailView.as_view()),
     url(r'^del/(?P<pk>\d+)', DelCameraDetailView.as_view()),
+    url(r'^charts/', chartView.as_view()),
 ]
