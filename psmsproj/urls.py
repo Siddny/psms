@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^up/(?P<pk>\d+)', UpCameraDetailView.as_view()),
     url(r'^del/(?P<pk>\d+)', DelCameraDetailView.as_view()),
     url(r'^charts/', chartView.as_view()),
+    url(r'^delete_cam_type/(?P<pk>\d+)', DelCameraType.as_view()),
 ]

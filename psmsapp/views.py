@@ -112,6 +112,18 @@ class NewCameraType(generics.CreateAPIView):
     cameratype = CameraTypes.objects.create(name = request.data['name'])
     return Response(status=status.HTTP_201_CREATED)
 
+### delete type of camera
+class DelCameraType(generics.RetrieveDestroyAPIView):
+  queryset = CameraTypes.objects.all()
+  serializer_class = CameraTypesSerializer
+
+  def delete(self, request, pk, format=None):
+      try:
+          updated_camera_type = CameraTypes.objects.get(pk=pk)
+          updated_camera_type.delete()
+          return Response(status=status.HTTP_204_NO_CONTENT)
+      except Exception as e:
+          raise e
 
 
 # ya keegan
