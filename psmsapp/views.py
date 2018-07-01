@@ -9,8 +9,10 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from datetime import date
 
+from rest_framework.views import APIView
+
 from .models import *
-from .serializers import ( CameraDetailSerializer, CameraTypesSerializer )
+from .serializers import *
 
 
 ### show camera details
@@ -158,11 +160,6 @@ class chartView(generics.ListAPIView):
     queryset = self.get_queryset()
     serializer = CameraTypesSerializer(queryset, many=True)
     return Response(serializer.data)
-
-
-
-
-
 # {
 # "cameradetail":[{
 #     "name": "infinix",
@@ -177,3 +174,77 @@ class chartView(generics.ListAPIView):
 # }],
 #     "name": "HD"
 # }
+
+class EmployeesView(generics.ListCreateAPIView):
+  queryset = Employee.objects.all()
+  serializer_class = EmployeeSerializer
+
+  # def get(self, request, format=None):
+  #   try:
+  #     employee = queryset
+  #   except Exception as e:
+  #     return Response(e, status = status.HTTP_400_BAD_REQUEST)
+  #   return Response(data=employee, status = status.HTTP_200_OK)
+
+  def post(self, request, format=None):
+    print(request.data)
+    try:
+      employee = Employee.objects.create(
+        name = request.data['name'],
+        id_number = request.data['id_number'],
+        email = request.data['email'],
+        department = request.data['department'],
+        designation = request.data['designation']
+        )
+    except Exception as e:
+      return Response(e,status = status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_201_CREATED)
+
+class EquipmentView(generics.ListCreateAPIView):
+  queryset = Equipment.objects.all()
+  serializer_class = EquipmentSerializer
+
+  # def get(self, request, format=None):
+  #   try:
+  #     equipment = queryset
+  #   except Exception as e:
+  #     return Response(status = status.HTTP_400_BAD_REQUEST)
+  #   return Response(data=equipment, status = status.HTTP_200_OK)
+
+  def post(self, request, format=None):
+    try:
+      equipment = Equipment.objects.create(
+        name = request.data['name'],
+        model = request.data['model'], 
+        p_serial_number = request.data['p_serial_number'],
+        status = request.data['status'],
+        _type = request.data['_type'],
+        brand = request.data['brand']
+        )
+    except Exception as e:
+      return Response(status = status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_201_CREATED)
+
+class AssignToolsView(generics.ListCreateAPIView):
+  queryset = AssignTools.objects.all()
+  serializer_class = AssignToolsSerializer
+
+# {
+#     "availability": "book",
+#     "employee": 1,
+#     "equipments": 1  
+# }
+
+  def post(self, request, format=None):
+    print(request.data)
+    employee = Employee.objects.get(id=request.data['employee'])
+    equipments = Equipment.objects.get(id=request.data['equipments'])
+    try:
+      assign_tool = AssignTools.objects.create(
+        availability = request.data['availability'],
+        employee = employee,
+        equipments = equipments,
+        )
+    except Exception as e:
+      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_201_CREATED)
