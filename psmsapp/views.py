@@ -14,6 +14,8 @@ from rest_framework.views import APIView
 from .models import *
 from .serializers import *
 
+from django.db import transaction
+
 
 ### show camera details
 class CameraDetailView(generics.ListAPIView):
@@ -229,11 +231,13 @@ class AssignToolsView(generics.ListCreateAPIView):
   queryset = AssignTools.objects.all()
   serializer_class = AssignToolsSerializer
 
-# {
-#     "availability": "book",
-#     "employee": 1,
-#     "equipments": 1  
-# }
+  """
+  {
+      "availability": "book",
+      "employee": 1,
+      "equipments": 1  
+  }
+  """
 
   def post(self, request, format=None):
     print(request.data)
@@ -248,3 +252,34 @@ class AssignToolsView(generics.ListCreateAPIView):
     except Exception as e:
       return Response(e, status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
+
+
+class BookingToolsView(generics.UpdateAPIView):
+  queryset = AssignTools.objects.all()
+  serializer_class = AssignToolsSerializer
+
+
+  def put(self, request, format=None):
+    print(request.data)
+    try:
+
+      with transaction.atomic():
+        for i, row in df.iterrows():
+          update_equipment_status = AssignTools.objects.get(pk=row.pk, month=month)
+
+          # if (row.availability is None) or np.isnan(row.availability): 
+          #     # if it's already None, why set it to None?
+          #     row.availability = None
+
+          if (row.availability == "book"):
+            row.availability = "book"
+          if (row.availability == "assign"):
+            row.availability = "assign"
+          if (row.availability == "free"):
+            row.availability = "free"
+
+          update_equipment_status.availability = row.availability
+          update_equipment_status.save()
+      return Response(serializer.data)
+    except Exception as e:
+      raise e

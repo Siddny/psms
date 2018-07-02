@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^employees/', EmployeesView.as_view()),
     url(r'^equipment/', EquipmentView.as_view()),
     url(r'^assign_tool/', AssignToolsView.as_view()),
+    url(r'^book_tool/', BookingToolsView.as_view()),
 
 ]
