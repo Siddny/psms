@@ -38,7 +38,7 @@ class CreateListCameraDetailView(generics.ListCreateAPIView):
     cameradetail = CameraDetail.objects.create(
                   name = request.data['name'],
                   model = request.data['model'],
-                  p_serial_number = request.data['p_serial_number'],
+                  serial_number = request.data['serial_number'],
                   status = request.data['status'],
                   camera_type= camera_type)
     return Response(status=status.HTTP_201_CREATED)
@@ -88,7 +88,7 @@ class AddCameraDetailView(generics.ListCreateAPIView):
     cameradetail = CameraDetail.objects.create(
                   name = request.data['name'],
                   model = request.data['model'],
-                  p_serial_number = request.data['p_serial_number'],
+                  serial_number = request.data['serial_number'],
                   status = request.data['status'],
                   camera_type= camera_type)
     return Response(status=status.HTTP_201_CREATED)
@@ -179,23 +179,30 @@ class chartView(generics.ListAPIView):
     }
     """
 
-class EmployeesView(generics.ListCreateAPIView):
-  queryset = Employee.objects.all()
-  serializer_class = EmployeeSerializer
-
-  # def get(self, request, format=None):
-  #   try:
-  #     employee = queryset
-  #   except Exception as e:
-  #     return Response(e, status = status.HTTP_400_BAD_REQUEST)
-  #   return Response(data=employee, status = status.HTTP_200_OK)
+class EmployeesView(APIView):
+  def get(self, request, format=None):
+    try:
+      employee = Employee.objects.all()
+    except Exception as e:
+      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+    return Response(data=employee.values(), status = status.HTTP_200_OK)
 
   def post(self, request, format=None):
-    print(request.data)
+    """
+    {
+      "name"" "",
+      "id_number"" "",
+      "email"" "",
+      "department"" "",
+      "designation"" ""
+    }
+    """
     try:
       employee = Employee.objects.create(
-        name = request.data['name'],
+        first_name = request.data['first_name'],
+        last_name = request.data['last_name'],
         id_number = request.data['id_number'],
+        phone_number = request.data['phone_number'],
         email = request.data['email'],
         department = request.data['department'],
         designation = request.data['designation']
@@ -204,110 +211,147 @@ class EmployeesView(generics.ListCreateAPIView):
       return Response(e,status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
-class EquipmentView(generics.ListCreateAPIView):
-  queryset = Equipment.objects.all()
-  serializer_class = EquipmentSerializer
+class EquipmentView(APIView):
 
-  # def get(self, request, format=None):
-  #   try:
-  #     equipment = queryset
-  #   except Exception as e:
-  #     return Response(status = status.HTTP_400_BAD_REQUEST)
-  #   return Response(data=equipment, status = status.HTTP_200_OK)
-
-  def post(self, request, format=None):
+  def get(self, request, format=None):
     try:
-      equipment = Equipment.objects.create(
-        name = request.data['name'],
-        model = request.data['model'], 
-        p_serial_number = request.data['p_serial_number'],
-        status = request.data['status'],
-        _type = request.data['_type'],
-        brand = request.data['brand']
-        )
+      equipment = Equipment.objects.all()
     except Exception as e:
       return Response(status = status.HTTP_400_BAD_REQUEST)
-    return Response(status=status.HTTP_201_CREATED)
-
-class AssignToolsView(generics.ListCreateAPIView):
-  queryset = AssignTools.objects.all()
-  serializer_class = AssignToolsSerializer
-
-  """
-  {
-      "availability": "assign",
-      "employee": 1,
-      "equipments": 1  
-  }
-  """
+    return Response(data=equipment.values(), status = status.HTTP_200_OK)
 
   def post(self, request, format=None):
+    """
+    {
+      "label": "",
+      "model": "",
+      "serial_number": "",
+      "status": "",
+      "_type": "",
+      "brand": ""
+    }
+    """
     print(request.data)
-    employee = Employee.objects.get(id=request.data['employee'])
-    equipments = Equipment.objects.get(id=request.data['equipments'])
     try:
-      assign_tool = AssignTools.objects.create(
-        availability = request.data['availability'],
-        employee = employee,
-        equipments = equipments,
+      equipment = Equipment.objects.create(
+        label = request.data['label'],
+        model = request.data['model'], 
+        serial_number = request.data['serial_number'],
+        status = request.data['status'],
+        _type = request.data['_type'],
+        brand = request.data['brand'],
+        # availability = request.data['availability']
         )
+      equipment.save()
     except Exception as e:
       return Response(e, status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
-class BookingToolsView(generics.UpdateAPIView):
-  queryset = AssignTools.objects.all()
-  serializer_class = AssignToolsSerializer
+class AssignToolsView(APIView):
 
-  """
-  {
-    "employee": 1,
-    "tools": [
-      {
-        "tool_id": 1,
-        "availability": "free"
-      },
-      {
-        "tool_id": 2,
-        "availability": "free"
-      }
-    ]
-  }
-  """
+  def get(self, request, format=None):
+    try:
+      assign_instances = AssignTools.objects.all()
+    except Exception as e:
+      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+    return Response(data=assign_instances.values(
+      "employee__first_name",
+      "employee__last_name",
+      "employee__id_number",
+      "employee__phone_number",
+      "employee__email",
+      "employee__department",
+      "employee__designation",
+      "equipments__label",
+      "equipments___type",
+      "equipments__brand",
+      "equipments__model",
+      "equipments__serial_number",
+      "equipments__status",
+      "equipments__date_added",
+      "equipments__availability"
+      ), status = status.HTTP_200_OK)
+
+
+  def post(self, request, format=None):
+    """
+    {
+        "availability": "assign",
+        "employee": 1,
+        "tools": [1, 2,3]
+    }
+    """
+    print(request.data)
+    try:
+      employee = Employee.objects.get(id=request.data['employee'])
+
+      for y in request.data['tools']:
+        print(y)
+        tools = Equipment.objects.get(id=y)
+
+        assign_tool = AssignTools.objects.create(
+          employee = employee,
+          equipments = tools,
+          )
+
+    except Exception as e:
+      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_201_CREATED)
 
   def put(self, request, format=None):
-    print(request.data)
-
+    """
+    {
+      "employee": 1,
+      "availability": "free",
+      "tools": [1, 2,3]
+    }
+    """
+    print(type(request.data['tools']))
     try:
       emp_instance = Employee.objects.get(pk=request.data["employee"])
       for x in request.data['tools']:
-        # print(x['availability']);
+        print(x)
+        tool_instance = Equipment.objects.get(pk=request.data["employee"])
         assign_instance = AssignTools.objects.get(pk=x['tool_id'])
 
         assign_instance.availability = x['availability']
         assign_instance.save()
     except Exception as e:
       raise e
-    return Response(data=AssignTools.objects.all().values(),status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_201_CREATED)
 
 
-  # def put(self, request, format=None):
-  #   print(request.data)
-  #   try:
 
-  #     with transaction.atomic():
-  #       for i, row in df.iterrows():
-  #         update_equipment_status = AssignTools.objects.get(pk=row.pk, month=month)
+# class BookingToolsView(generics.UpdateAPIView):
+#   queryset = AssignTools.objects.all()
+#   serializer_class = AssignToolsSerializer
 
-  #         if (row.availability == "book"):
-  #           row.availability = "book"
-  #         if (row.availability == "assign"):
-  #           row.availability = "assign"
-  #         if (row.availability == "free"):
-  #           row.availability = "free"
 
-  #         update_equipment_status.availability = row.availability
-  #         update_equipment_status.save()
-  #     return Response(serializer.data)
-  #   except Exception as e:
-  #     raise e
+#   def put(self, request, format=None):
+#     """
+#     {
+#       "employee": 1,
+#       "availability": "free",
+#       "tools": [
+#         {
+#           "tool_id": 1,
+#         },
+#         {
+#           "tool_id": 2,
+#         }
+#       ]
+#     }
+#     """
+#     print(request.data)
+
+#     try:
+#       emp_instance = Employee.objects.get(pk=request.data["employee"])
+#       for x in request.data['tools']:
+#         # print(x['availability']);
+#         assign_instance = AssignTools.objects.get(pk=x['tool_id'])
+
+#         assign_instance.availability = x['availability']
+#         assign_instance.save()
+#     except Exception as e:
+#       raise e
+#     return Response(data=AssignTools.objects.all().values(),status=status.HTTP_201_CREATED)

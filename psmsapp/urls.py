@@ -20,8 +20,8 @@ urlpatterns = [
     url(r'^delete_cam_type/(?P<pk>\d+)', DelCameraType.as_view()),
 
     url(r'^employees/', EmployeesView.as_view()),
-    url(r'^equipment/', EquipmentView.as_view()),
+    url(r'^equipments/', EquipmentView.as_view()),
     url(r'^assign_tool/', AssignToolsView.as_view()),
-    url(r'^book_tool/', BookingToolsView.as_view()),
+    # url(r'^book_tool/', BookingToolsView.as_view()),
 
 ]

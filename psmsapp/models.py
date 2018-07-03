@@ -36,11 +36,13 @@ class Employee(models.Model):
              ('Lights', ('Lights')),
              ('Screens', ('Screens')),
              ('Sound', ('Sound')))
-    name = models.CharField(max_length=200, null=False, blank=False)
-    id_number = models.CharField(max_length=50, null=False, blank=False)
-    email = models.CharField(max_length=50, null=False, blank=False)
+    first_name = models.CharField(max_length=200, null=False, blank=False)
+    last_name = models.CharField(max_length=200, null=False, blank=False)
+    id_number = models.CharField(max_length=50, null=True, blank=True)
+    phone_number = models.CharField(max_length=50, null=True, blank=True)
+    email = models.CharField(max_length=50, null=True, blank=True)
     department = models.CharField(max_length=200, choices=DEPARTMENTS)
-    designation = models.CharField(max_length=50, null=False, blank=False)
+    designation = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
         db_table = "Employee"
@@ -55,13 +57,20 @@ class Equipment(models.Model):
              ('Good', ('Good')),
              ('Fair', ('Fair')),
              ('Bad', ('Bad')))
-    name = models.CharField(max_length=20, null=False, blank=False)
-    model = models.CharField(max_length=20, null=True, blank=False)
-    p_serial_number = models.CharField(max_length=20, null=True, blank=False)
-    date_added = models.DateField(null=True,blank=True, auto_now=True)
+
+    AVAILABILITY = (
+        ('book', 'book'),
+        ('assign', 'assign'),
+        ('free', 'free'))
+
+    label = models.CharField(max_length=20, null=False, blank=False)
+    _type = models.CharField(max_length=20, null=True, blank=True)
+    brand = models.CharField(max_length=20, null=True, blank=True)
+    model = models.CharField(max_length=20, null=True, blank=True)
+    serial_number = models.CharField(max_length=20, null=True, blank=False)
     status = models.CharField(max_length=200,choices=CHOICES)
-    _type = models.CharField(max_length=20, null=True, blank=False)
-    brand = models.CharField(max_length=20, null=True, blank=False)
+    date_added = models.DateField(null=True,blank=True, auto_now=True)
+    availability = models.CharField(max_length = 200, choices= AVAILABILITY, default='free')
 
     class Meta:
         db_table = "Equipment"
@@ -69,17 +78,11 @@ class Equipment(models.Model):
         verbose_name_plural = "Equipments"
 
     def __str__(self):
-        return self.name
+        return self.label
 
 class AssignTools(models.Model):
-    AVAILABILITY = (
-        ('book', 'book'),
-        ('assign', 'assign'),
-        ('free', 'free'),
-        )
     employee = models.ForeignKey(Employee, null = False)
     equipments = models.ForeignKey(Equipment, null= False)
-    availability = models.CharField(max_length = 200, choices= AVAILABILITY)
 
     class Meta:
         db_table = "AssignTools"
