@@ -162,20 +162,22 @@ class chartView(generics.ListAPIView):
     queryset = self.get_queryset()
     serializer = CameraTypesSerializer(queryset, many=True)
     return Response(serializer.data)
-# {
-# "cameradetail":[{
-#     "name": "infinix",
-#     "model": "cannon",
-#     "status": null,
-#     "camera_type": null
-# },{
-#     "name": "Kodak",
-#     "model": "4567",
-#     "status": null,
-#     "camera_type": null
-# }],
-#     "name": "HD"
-# }
+    """
+    {
+    "cameradetail":[{
+        "name": "infinix",
+        "model": "cannon",
+        "status": null,
+        "camera_type": null
+    },{
+        "name": "Kodak",
+        "model": "4567",
+        "status": null,
+        "camera_type": null
+    }],
+        "name": "HD"
+    }
+    """
 
 class EmployeesView(generics.ListCreateAPIView):
   queryset = Employee.objects.all()
@@ -233,7 +235,7 @@ class AssignToolsView(generics.ListCreateAPIView):
 
   """
   {
-      "availability": "book",
+      "availability": "assign",
       "employee": 1,
       "equipments": 1  
   }
@@ -253,33 +255,59 @@ class AssignToolsView(generics.ListCreateAPIView):
       return Response(e, status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
-
 class BookingToolsView(generics.UpdateAPIView):
   queryset = AssignTools.objects.all()
   serializer_class = AssignToolsSerializer
 
+  """
+  {
+    "employee": 1,
+    "tools": [
+      {
+        "tool_id": 1,
+        "availability": "free"
+      },
+      {
+        "tool_id": 2,
+        "availability": "free"
+      }
+    ]
+  }
+  """
 
   def put(self, request, format=None):
     print(request.data)
+
     try:
+      emp_instance = Employee.objects.get(pk=request.data["employee"])
+      for x in request.data['tools']:
+        # print(x['availability']);
+        assign_instance = AssignTools.objects.get(pk=x['tool_id'])
 
-      with transaction.atomic():
-        for i, row in df.iterrows():
-          update_equipment_status = AssignTools.objects.get(pk=row.pk, month=month)
-
-          # if (row.availability is None) or np.isnan(row.availability): 
-          #     # if it's already None, why set it to None?
-          #     row.availability = None
-
-          if (row.availability == "book"):
-            row.availability = "book"
-          if (row.availability == "assign"):
-            row.availability = "assign"
-          if (row.availability == "free"):
-            row.availability = "free"
-
-          update_equipment_status.availability = row.availability
-          update_equipment_status.save()
-      return Response(serializer.data)
+        assign_instance.availability = x['availability']
+        assign_instance.save()
     except Exception as e:
       raise e
+    return Response(data=AssignTools.objects.all().values(),status=status.HTTP_201_CREATED)
+
+
+  # def put(self, request, format=None):
+  #   print(request.data)
+  #   try:
+
+  #     with transaction.atomic():
+  #       for i, row in df.iterrows():
+  #         update_equipment_status = AssignTools.objects.get(pk=row.pk, month=month)
+
+  #         if (row.availability == "book"):
+  #           row.availability = "book"
+  #         if (row.availability == "assign"):
+  #           row.availability = "assign"
+  #         if (row.availability == "free"):
+  #           row.availability = "free"
+
+  #         update_equipment_status.availability = row.availability
+  #         update_equipment_status.save()
+  #     return Response(serializer.data)
+  #   except Exception as e:
+  #     raise e

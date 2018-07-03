@@ -89,17 +89,25 @@ WSGI_APPLICATION = 'psmsproj.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'psmsapp',
-        'USER': 'postgres',
-        'PASSWORD': 'sidny',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+if 'postgresql' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'psmsapp',
+            'USER': 'postgres',
+            'PASSWORD': 'sidny',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
     }
-}
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+    
 db_from_env = dj_database_url.config()
 DATABASES['default'].update(db_from_env)
 DATABASES['default']['CONN_MAX_AGE'] = 500
