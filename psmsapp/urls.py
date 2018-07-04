@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from psmsapp.views import *
 
-urlpatterns = [    
+urlpatterns = [
     # ya keegan
     url(r'^camera_detail_add/', AddCameraType.as_view()),
     # create new type of camera
@@ -23,5 +23,4 @@ urlpatterns = [
     url(r'^equipments/', EquipmentView.as_view()),
     url(r'^assign_tool/', AssignToolsView.as_view()),
     # url(r'^book_tool/', BookingToolsView.as_view()),
-
 ]

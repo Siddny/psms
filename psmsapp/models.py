@@ -64,13 +64,14 @@ class Equipment(models.Model):
         ('free', 'free'))
 
     label = models.CharField(max_length=20, null=False, blank=False)
-    _type = models.CharField(max_length=20, null=True, blank=True)
+    equipment_type = models.CharField(max_length=20, null=True, blank=True)
     brand = models.CharField(max_length=20, null=True, blank=True)
     model = models.CharField(max_length=20, null=True, blank=True)
     serial_number = models.CharField(max_length=20, null=True, blank=False)
     status = models.CharField(max_length=200,choices=CHOICES)
     date_added = models.DateField(null=True,blank=True, auto_now=True)
     availability = models.CharField(max_length = 200, choices= AVAILABILITY, default='free')
+    in_use = models.BooleanField(default=False)
 
     class Meta:
         db_table = "Equipment"
@@ -83,6 +84,10 @@ class Equipment(models.Model):
 class AssignTools(models.Model):
     employee = models.ForeignKey(Employee, null = False)
     equipments = models.ForeignKey(Equipment, null= False)
+    condition_ontake = models.CharField(max_length=200, null=True, blank=True)
+    condition_onreturn = models.CharField(max_length=200, null=True, blank=True)
+    date_taken = models.DateField(null=True,blank=True, auto_now_add=True)
+    date_returned = models.DateField(null=True,blank=True, auto_now_add=True)
 
     class Meta:
         db_table = "AssignTools"

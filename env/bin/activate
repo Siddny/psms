@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/aphya2/Documents/psms/env"
+VIRTUAL_ENV="/root/Desktop/Dev/psms/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

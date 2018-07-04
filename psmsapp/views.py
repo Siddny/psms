@@ -227,7 +227,7 @@ class EquipmentView(APIView):
       "model": "",
       "serial_number": "",
       "status": "",
-      "_type": "",
+      "equipment_type": "",
       "brand": ""
     }
     """
@@ -238,7 +238,7 @@ class EquipmentView(APIView):
         model = request.data['model'], 
         serial_number = request.data['serial_number'],
         status = request.data['status'],
-        _type = request.data['_type'],
+        equipment_type = request.data['equipment_type'],
         brand = request.data['brand'],
         # availability = request.data['availability']
         )
@@ -246,6 +246,33 @@ class EquipmentView(APIView):
     except Exception as e:
       return Response(e, status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
+
+  def put(self, request, format=None):
+    """
+    when tool is returned or booked
+    {
+      "availability": free or book,
+      "in_use": false
+    }
+    OR
+    when tool is assigned
+    {
+      "availability": assign,
+      "in_use": true
+    }
+    NB: only marked as in_use=true if availability=assign
+    """
+    print(type(request.data))
+    try:
+      equipment_instance = Equipment.objects.get(pk=request.data["id"])
+      equipment_instance.availability = request.data['availability']
+      equipment_instance.in_use = request.data['in_use']
+
+      equipment_instance.save()
+    except Exception as e:
+      raise e
+    return Response(status=status.HTTP_201_CREATED)
+
 
 class AssignToolsView(APIView):
 
@@ -272,7 +299,6 @@ class AssignToolsView(APIView):
       "equipments__availability"
       ), status = status.HTTP_200_OK)
 
-
   def post(self, request, format=None):
     """
     {
@@ -298,60 +324,24 @@ class AssignToolsView(APIView):
       return Response(e, status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
-  def put(self, request, format=None):
-    """
-    {
-      "employee": 1,
-      "availability": "free",
-      "tools": [1, 2,3]
-    }
-    """
-    print(type(request.data['tools']))
-    try:
-      emp_instance = Employee.objects.get(pk=request.data["employee"])
-      for x in request.data['tools']:
-        print(x)
-        tool_instance = Equipment.objects.get(pk=request.data["employee"])
-        assign_instance = AssignTools.objects.get(pk=x['tool_id'])
+  # def put(self, request, format=None):
+  #   """
+  #   {
+  #     "employee": 1,
+  #     "availability": "free",
+  #     "tools": [1, 2,3]
+  #   }
+  #   """
+  #   print(type(request.data['tools']))
+  #   try:
+  #     emp_instance = Employee.objects.get(pk=request.data["employee"])
+  #     for x in request.data['tools']:
+  #       print(x)
+  #       tool_instance = Equipment.objects.get(pk=request.data["employee"])
+  #       assign_instance = AssignTools.objects.get(pk=x['tool_id'])
 
-        assign_instance.availability = x['availability']
-        assign_instance.save()
-    except Exception as e:
-      raise e
-    return Response(status=status.HTTP_201_CREATED)
-
-
-
-# class BookingToolsView(generics.UpdateAPIView):
-#   queryset = AssignTools.objects.all()
-#   serializer_class = AssignToolsSerializer
-
-
-#   def put(self, request, format=None):
-#     """
-#     {
-#       "employee": 1,
-#       "availability": "free",
-#       "tools": [
-#         {
-#           "tool_id": 1,
-#         },
-#         {
-#           "tool_id": 2,
-#         }
-#       ]
-#     }
-#     """
-#     print(request.data)
-
-#     try:
-#       emp_instance = Employee.objects.get(pk=request.data["employee"])
-#       for x in request.data['tools']:
-#         # print(x['availability']);
-#         assign_instance = AssignTools.objects.get(pk=x['tool_id'])
-
-#         assign_instance.availability = x['availability']
-#         assign_instance.save()
-#     except Exception as e:
-#       raise e
-#     return Response(data=AssignTools.objects.all().values(),status=status.HTTP_201_CREATED)
+  #       assign_instance.availability = x['availability']
+  #       assign_instance.save()
+  #   except Exception as e:
+  #     raise e
+  #   return Response(status=status.HTTP_201_CREATED)

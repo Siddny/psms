@@ -1,4 +1,4 @@
-#!/home/aphya2/Documents/psms/env/bin/python
+#!/root/Desktop/Dev/psms/env/bin/python
 
 import sys
 import getopt
