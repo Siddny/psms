@@ -18,7 +18,7 @@ from django.contrib import admin
 from psmsapp.views import *
 
 urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
     # ya keegan
     url(r'^camera_detail_add/', AddCameraType.as_view()),
     # create new type of camera
@@ -32,4 +32,6 @@ urlpatterns = [
     url(r'^createlist/', CreateListCameraDetailView.as_view()),
     url(r'^up/(?P<pk>\d+)', UpCameraDetailView.as_view()),
     url(r'^del/(?P<pk>\d+)', DelCameraDetailView.as_view()),
+    url(r'^charts/', chartView.as_view()),
+    url(r'^delete_cam_type/(?P<pk>\d+)', DelCameraType.as_view()),
 ]

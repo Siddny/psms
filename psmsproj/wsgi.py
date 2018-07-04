@@ -14,3 +14,5 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "psmsproj.settings")
 
 application = get_wsgi_application()
+
+# web: python manage.py runserver 0.0.0.0:$PORT
