@@ -2,3 +2,5 @@
 */migrations/*.pyc
 
 env/
+
+*.sqlite3

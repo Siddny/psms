@@ -16,6 +16,13 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from psmsapp.models import *
+
+admin.site.register(CameraTypes)
+admin.site.register(Employee)
+admin.site.register(Equipment)
+admin.site.register(AssignTools)
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('psmsapp.urls')),

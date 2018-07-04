@@ -50,7 +50,7 @@ class Employee(models.Model):
         verbose_name_plural = "Employees"
 
     def __str__(self):
-        return self.name
+        return "%s %s"%(self.first_name,self.last_name)
 
 class Equipment(models.Model):
     CHOICES =(
@@ -93,3 +93,6 @@ class AssignTools(models.Model):
         db_table = "AssignTools"
         verbose_name = "AssignTools"
         verbose_name_plural = "AssignTools"
+
+    def __str__(self):
+        return "%s %s"%(self.employee,self.equipments)

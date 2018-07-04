@@ -282,21 +282,21 @@ class AssignToolsView(APIView):
     except Exception as e:
       return Response(e, status = status.HTTP_400_BAD_REQUEST)
     return Response(data=assign_instances.values(
-      "employee__first_name",
-      "employee__last_name",
-      "employee__id_number",
-      "employee__phone_number",
-      "employee__email",
-      "employee__department",
-      "employee__designation",
-      "equipments__label",
-      "equipments___type",
-      "equipments__brand",
-      "equipments__model",
-      "equipments__serial_number",
-      "equipments__status",
-      "equipments__date_added",
-      "equipments__availability"
+      # "employee__first_name",
+      # "employee__last_name",
+      # "employee__id_number",
+      # "employee__phone_number",
+      # "employee__email",
+      # "employee__department",
+      # "employee__designation",
+      # "equipments__label",
+      # "equipments___type",
+      # "equipments__brand",
+      # "equipments__model",
+      # "equipments__serial_number",
+      # "equipments__status",
+      # "equipments__date_added",
+      # "equipments__availability"
       ), status = status.HTTP_200_OK)
 
   def post(self, request, format=None):
