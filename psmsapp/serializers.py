@@ -21,7 +21,7 @@ class LolSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = Employee
+		model = User
 		fields = '__all__'
 
 class EquipmentSerializer(serializers.ModelSerializer):

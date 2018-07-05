@@ -23,4 +23,10 @@ urlpatterns = [
     url(r'^equipments/', EquipmentView.as_view()),
     url(r'^assign_tool/', AssignToolsView.as_view()),
     # url(r'^book_tool/', BookingToolsView.as_view()),
+    
+
+    url(r'^department/', DepartmentView.as_view()),
+    url(r'^projects/', ProjectView.as_view()),
+    url(r'^dispatch_to_dept/', DispatchToDeptView.as_view()),
+    url(r'^dispatch_tools_to_dept/', DispatchToolsToDeptView.as_view()),
 ]

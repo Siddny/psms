@@ -19,9 +19,13 @@ from django.contrib import admin
 from psmsapp.models import *
 
 admin.site.register(CameraTypes)
-admin.site.register(Employee)
+admin.site.register(User)
 admin.site.register(Equipment)
 admin.site.register(AssignTools)
+admin.site.register(Department)
+admin.site.register(Project)
+admin.site.register(DispatchToDept)
+admin.site.register(DispatchToolsToDept)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

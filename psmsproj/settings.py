@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     'psms.herokuapp.com',
 ]
 
+AUTH_USER_MODEL = 'psmsapp.User'
 
 # Application definition
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'django_extensions',
     'psmsapp',
 ]
 
@@ -171,3 +173,8 @@ CORS_ALLOW_METHODS = (
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
