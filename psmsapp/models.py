@@ -80,7 +80,7 @@ class Equipment(models.Model):
 
 class DispatchToDept(models.Model):
     department = models.ForeignKey(Department, null=False)
-    date_out = models.DateField(null=True, blank=True, auto_now=False)
+    date_out = models.DateField(null=True, blank=True, auto_now_add=True)
     date_in = models.DateField(null=True, blank=True, auto_now=False)
     project = models.ForeignKey(Project, null=False)
 
@@ -88,13 +88,19 @@ class DispatchToolsToDept(models.Model):
     dispatch = models.ForeignKey(DispatchToDept, null=False)
     equipment = models.ForeignKey(Equipment, null=False)
 
+class DispatchToolsToUsers(models.Model):
+    employee = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False)
+    dispatch_date = models.DateTimeField(auto_now_add=True)
+    return_date = models.DateTimeField(blank=True, null=True)
 class AssignTools(models.Model):
-    employee = models.ForeignKey(settings.AUTH_USER_MODEL)
-    equipments = models.ForeignKey(Equipment, null= False)
+    user_dispatch = models.ForeignKey(DispatchToolsToUsers, null= False, blank=True)
+    # employee = models.ForeignKey(settings.AUTH_USER_MODEL)
+    equipment = models.ForeignKey(DispatchToolsToDept, null= False)
+    # number = models.PositiveIntegerField(default=1)
     condition_ontake = models.CharField(max_length=200, null=True, blank=True)
     condition_onreturn = models.CharField(max_length=200, null=True, blank=True)
-    date_taken = models.DateField(null=True,blank=True, auto_now_add=True)
-    date_returned = models.DateField(null=True,blank=True, auto_now_add=True)
+    # date_taken = models.DateField(null=True,blank=True, auto_now_add=True)
+    # date_returned = models.DateField(null=True,blank=True, auto_now_add=True)
 
     class Meta:
         db_table = "AssignTools"

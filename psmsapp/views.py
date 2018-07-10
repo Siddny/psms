@@ -150,8 +150,8 @@ class AddCameraType(generics.CreateAPIView):
                   status = item['status'],
                   name = item['name'],
                   model = item['model'])
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(data={"Error":str(e)},status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -187,7 +187,7 @@ class EmployeesView(APIView):
     try:
       employee = User.objects.all()
     except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+      return Response(data={"Error":str(e)},status=status.HTTP_400_BAD_REQUEST)
     return Response(data=employee.values(), status = status.HTTP_200_OK)
 
   def post(self, request, format=None):
@@ -211,7 +211,7 @@ class EmployeesView(APIView):
         designation = request.data['designation']
         )
     except Exception as e:
-      return Response(e,status = status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
 class EquipmentView(APIView):
@@ -220,7 +220,7 @@ class EquipmentView(APIView):
     try:
       equipment = Equipment.objects.all()
     except Exception as e:
-      return Response(status = status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(data=equipment.values(), status = status.HTTP_200_OK)
 
   def post(self, request, format=None):
@@ -247,7 +247,7 @@ class EquipmentView(APIView):
         )
       equipment.save()
     except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
   def put(self, request, format=None):
@@ -265,7 +265,7 @@ class EquipmentView(APIView):
     }
     NB: only marked as in_use=true if availability=assign
     """
-    print(type(request.data))
+    # print(type(request.data))
     try:
       equipment_instance = Equipment.objects.get(pk=request.data["id"])
       equipment_instance.availability = request.data['availability']
@@ -273,58 +273,58 @@ class EquipmentView(APIView):
 
       equipment_instance.save()
     except Exception as e:
-      raise e
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
 
-class AssignToolsView(APIView):
+# class AssignToolsView(APIView):
 
-  def get(self, request, format=None):
-    try:
-      assign_instances = AssignTools.objects.all()
-    except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
-    return Response(data=assign_instances.values(
-      # "employee__first_name",
-      # "employee__last_name",
-      # "employee__id_number",
-      # "employee__phone_number",
-      # "employee__email",
-      # "employee__department",
-      # "employee__designation",
-      # "equipments__label",
-      # "equipments___type",
-      # "equipments__brand",
-      # "equipments__model",
-      # "equipments__serial_number",
-      # "equipments__status",
-      # "equipments__date_added",
-      # "equipments__availability"
-      ), status = status.HTTP_200_OK)
+#   def get(self, request, format=None):
+#     try:
+#       assign_instances = AssignTools.objects.all()
+#     except Exception as e:
+#       return Response(e, status = status.HTTP_400_BAD_REQUEST)
+#     return Response(data=assign_instances.values(
+#       # "employee__first_name",
+#       # "employee__last_name",
+#       # "employee__id_number",
+#       # "employee__phone_number",
+#       # "employee__email",
+#       # "employee__department",
+#       # "employee__designation",
+#       # "equipments__label",
+#       # "equipments___type",
+#       # "equipments__brand",
+#       # "equipments__model",
+#       # "equipments__serial_number",
+#       # "equipments__status",
+#       # "equipments__date_added",
+#       # "equipments__availability"
+#       ), status = status.HTTP_200_OK)
 
-  def post(self, request, format=None):
-    """
-    {
-        "availability": "assign",
-        "employee": 1,
-        "tools": [1, 2,3]
-    }
-    """
-    print(request.data)
-    try:
-      employee = User.objects.get(id=request.data['employee'])
+#   def post(self, request, format=None):
+#     """
+#     {
+#         "availability": "assign",
+#         "employee": 1,
+#         "tools": [1, 2,3]
+#     }
+#     """
+#     print(request.data)
+#     try:
+#       employee = User.objects.get(id=request.data['employee'])
 
-      for y in request.data['tools']:
-        print(y)
-        tools = Equipment.objects.get(id=y)
+#       for y in request.data['tools']:
+#         print(y)
+#         tools = Equipment.objects.get(id=y)
 
-        assign_tool = AssignTools.objects.create(
-          employee = employee,
-          equipments = tools,
-          )
-    except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
-    return Response(status=status.HTTP_201_CREATED)
+#         assign_tool = AssignTools.objects.create(
+#           employee = employee,
+#           equipments = tools,
+#           )
+#     except Exception as e:
+#       return Response(e, status = status.HTTP_400_BAD_REQUEST)
+#     return Response(status=status.HTTP_201_CREATED)
 
 
 class DepartmentView(APIView):
@@ -338,17 +338,17 @@ class DepartmentView(APIView):
     try:
       department = Department.objects.create(
         name=request.data['name'],
-        HOD=request.data['HOD']
+        HOD=User.objects.get(id=request.data['HOD'])
         )
     except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
   def get(self, request, format=None):
     try:
       departments = Department.objects.all()
     except Exception as e:
-      return Response(e, status=status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(data= departments.values(), status=status.HTTP_200_OK)
 
 
@@ -364,87 +364,100 @@ class ProjectView(APIView):
   """
   def post(self, request, format=None):
     try:
-      project = Project.objects.create(
+      Project.objects.create(
         name=request.data['name'],
         client=request.data['client'],
         location=request.data['location'],
-        producer=request.data['producer']
+        producer=User.objects.get(id=request.data['producer'])
         )
     except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
   def get(self, request, format=None):
     try:
       projects = Project.objects.all()
     except Exception as e:
-      return Response(e, status=status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(data= projects.values(), status=status.HTTP_200_OK)
 
-class DispatchToDeptView(APIView):
+class DispatchToUser(APIView):
 
   """
   {
-    "department": 1,
-    "date_out": "2018-08-08",
-    "date_in": "",
-    "project": 1,
-    "equipments": [1,2,3,4]
+    "Employee":1
+    "equipments":[
+      {
+        "equipment":2,
+        "condition_ontake":"okay"
+        "condition_onreturn":"okay"
+      }
+    ]
   }
   """
   def post(self, request, format=None):
     try:
-      dispatch = DispatchToDept.objects.create(
-        department=request.data['department'],
-        date_out=request.data['date_out'],
-        date_in=request.data['date_in'],
-        project=request.data['project']
+      dispatch = DispatchToolsToUsers.objects.create(
+        employee=User.objects.get(id=request.data['Employee']),
         )
     except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+      return Response(data={"Error":str(e)},status=status.HTTP_400_BAD_REQUEST)
     try:
       for item in request.data['equipments']:
+        eq = DispatchToolsToDept.objects.get(id=item["equipment"])
         DispatchToolsToDept.create(
-          dispatch = dispatch,
-          equipment = item
+          user_dispatch = dispatch,
+          equipment = eq,
+          condition_ontake = item["condition_ontake"],
+          # FIXME:
+          # will be set on return
+          # condition_onreturn = item["condition_onreturn"] 
           )
 
     except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
+      return Response(data = {"Error":str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
+    return Response(status=status.HTTP_201_CREATED)
+
+  def get(self, request, format=None):
+    try:
+      to_dispatch = DispatchToolsToUsers.objects.all()
+    except Exception as e:
+      return Response(data={"Error":str(e)},status=status.HTTP_400_BAD_REQUEST)
+    return Response(data= to_dispatch.values(), status=status.HTTP_200_OK)
+
+
+class DispatchToolsToDeptView(APIView):
+  """
+  {
+    "Dept":1,
+    "Project":1,
+    "Equipment":[1,2,6,3,5,9]
+  }
+  """
+  def post(self, request, format=None):
+    try:
+      project = Project.objects.get(id=request.data["Project"])
+      dept = Department.objects.get(id=request.data["Dept"])
+      dispatch = DispatchToDept.objects.create(
+        department = dept,
+        project = project
+      )
+      for item in request.data["Equipment"]:
+        eq = Equipment.objects.get(id=item)
+        DispatchToolsToDept.objects.create(
+          dispatch=dispatch,
+          equipments=eq
+          )
+    except Exception as e:
+      return Response(data ={"Error":str(e)}, status = status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_201_CREATED)
 
   def get(self, request, format=None):
     try:
       to_dispatch = DispatchToDept.objects.all()
     except Exception as e:
-      return Response(e, status=status.HTTP_400_BAD_REQUEST)
-    return Response(data= to_dispatch.values(), status=status.HTTP_200_OK)
-
-
-class DispatchToolsToDeptView(APIView):
-
-  """
-  {
-    "dispatch": 1,
-    "equipments": [1,2,3,4]
-  }
-  """
-  def post(self, request, format=None):
-    try:
-      to_dispatch = DispatchToolsToDept.objects.create(
-        dispatch=request.data['dispatch'],
-        equipments=request.data['equipments']
-        )
-    except Exception as e:
-      return Response(e, status = status.HTTP_400_BAD_REQUEST)
-    return Response(status=status.HTTP_201_CREATED)
-
-  def get(self, request, format=None):
-    try:
-      to_dispatch = DispatchToolsToDept.objects.all()
-    except Exception as e:
-      return Response(e, status=status.HTTP_400_BAD_REQUEST)
+      return Response(data ={"Error":str(e)},status = status.HTTP_400_BAD_REQUEST)
     return Response(data= to_dispatch.values(), status=status.HTTP_200_OK)
 
 
@@ -457,4 +470,36 @@ class DispatchToolsToDeptView(APIView):
     #     except Exception as err:
     #         return Response(data={"Error": str(err)}, status=status.HTTP_400_BAD_REQUEST)
     #     return Response(data=disp, status=status.HTTP_200_OK)
+    ########################################################################################################
+    ################################### views #############################################################
+    #######################################################################################################
+class AssignEmployeesToProject(APIView):
+  def post(self, request, format=None):
+    """    
+    data = {
+      "project_id":1,
+      "users":[2,4,5,6,7]
+    }
+    """
+    try:   
+      project = Project.objects.get(id=request.data["project_id"])
+      for item in request.data["users"]:
+        user = User.objects.get(id=item)
+        project.user_set.add(user)
+    except Exception as e:
+      return Response(data={"Error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_201_CREATED)
+  
+  def get(self, request, format=None):
+    try:  
+      query_set = Project.objects.filter(user = request.user).values()
+    except Exception as e:
+      return Response(data={"Error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(data=query_set,status=status.HTTP_200_OK)
+
+# class RequestedItemsDetailView(APIView):
+#   def get(self, request, pk, format=None):
+#     Dis
+
+
 
